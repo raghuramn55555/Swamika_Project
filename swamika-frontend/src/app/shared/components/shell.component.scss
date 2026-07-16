@@ -1,8 +1,9 @@
-// All layout styles are in global styles.scss (prototype-exact)
-// Component-scoped overrides only
+/* All layout styles are in global styles.scss */
+/* Component-scoped: theme toggle pill only */
+
 :host { display: block; }
 
-// ── Enhanced dark/light theme toggle ─────────────────────────────────────────
+/* ── Theme toggle pill ───────────────────────────────────────────────────── */
 .theme-toggle {
   position: relative;
   display: flex;
@@ -16,18 +17,19 @@
   padding: 0;
   flex-shrink: 0;
   transition: background 0.3s ease, border-color 0.3s ease;
-
-  &.dark {
-    background: #1e293b;
-    border-color: #475569;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-  }
 }
 
+.theme-toggle.dark {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ── Icons ───────────────────────────────────────────────────────────────── */
 .theme-icon {
   position: absolute;
   display: flex;
@@ -38,22 +40,25 @@
   z-index: 2;
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
+}
 
-  i { font-size: 13px; line-height: 1; }
+.theme-icon i {
+  font-size: 13px;
+  line-height: 1;
+}
 
-  &.sun {
-    left: 5px;
-    color: #f59e0b;
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
+.theme-icon.sun {
+  left: 5px;
+  color: #f59e0b;
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
 
-  &.moon {
-    right: 5px;
-    color: #94a3b8;
-    opacity: 0;
-    transform: scale(0.4) rotate(90deg);
-  }
+.theme-icon.moon {
+  right: 5px;
+  color: #94a3b8;
+  opacity: 0;
+  transform: scale(0.4) rotate(90deg);
 }
 
 .theme-toggle.dark .theme-icon.sun {
@@ -67,6 +72,7 @@
   color: #e2e8f0;
 }
 
+/* ── Knob ────────────────────────────────────────────────────────────────── */
 .theme-knob {
   position: absolute;
   top: 3px;

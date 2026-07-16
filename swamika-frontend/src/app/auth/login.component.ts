@@ -154,8 +154,8 @@ import { ThemeService } from '../core/services/theme.service';
     .workflow li {
       display: flex; align-items: flex-start; gap: 12px;
       padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
-      &:last-child { border-bottom: none; }
     }
+    .workflow li:last-child { border-bottom: none; }
     .wf-icon {
       width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
       background: rgba(255,255,255,0.12);
@@ -179,11 +179,11 @@ import { ThemeService } from '../core/services/theme.service';
       border: 1.5px solid var(--border); background: var(--surface);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: background 0.2s, border-color 0.2s, transform 0.15s;
-      .fa-sun  { font-size: 16px; color: #f59e0b; }
-      .fa-moon { font-size: 16px; color: #6366f1; }
-      &:hover { background: var(--surface-2); border-color: var(--brand); transform: scale(1.08); }
-      &:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
     }
+    .theme-toggle-btn .fa-sun  { font-size: 16px; color: #f59e0b; }
+    .theme-toggle-btn .fa-moon { font-size: 16px; color: #6366f1; }
+    .theme-toggle-btn:hover { background: var(--surface-2); border-color: var(--brand); transform: scale(1.08); }
+    .theme-toggle-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
     .form-box {
       flex: 1; display: flex; flex-direction: column; justify-content: center;
@@ -200,17 +200,17 @@ import { ThemeService } from '../core/services/theme.service';
       padding: 10px 12px; font-size: 13px;
       background: var(--surface); color: var(--text); font-family: inherit;
       transition: border-color 0.15s;
-      &:focus { outline: none; border-color: var(--brand); }
-      &.err   { border-color: var(--red); }
     }
+    .field-input:focus { outline: none; border-color: var(--brand); }
+    .field-input.err   { border-color: var(--red); }
     .input-wrap { position: relative; }
     .input-wrap .field-input { padding-right: 40px; }
     .vis-btn {
       position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
       color: var(--text-muted); display: flex; align-items: center;
-      &:hover { color: var(--text); }
     }
+    .vis-btn:hover { color: var(--text); }
     .field-err { font-size: 11.5px; color: var(--red); margin-top: 4px; display: block; }
 
     .check-row {
@@ -230,9 +230,9 @@ import { ThemeService } from '../core/services/theme.service';
       font-size: 14px; font-weight: 600; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.15s;
-      &:hover:not(:disabled) { background: var(--brand-strong); }
-      &:disabled { opacity: 0.7; cursor: not-allowed; }
     }
+    .submit-btn:hover:not(:disabled) { background: var(--brand-strong); }
+    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
     .spinner {
       width: 16px; height: 16px; border-radius: 50%;
       border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
