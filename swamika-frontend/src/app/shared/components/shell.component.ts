@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { CvService, UploadProgress } from '../../core/services/cv.service';
 import { UserRole } from '../../core/models/user.models';
 import { ScoreMeterComponent } from '../index';
 
@@ -44,8 +45,9 @@ const NAV_ROLES: Record<View, UserRole[]> = {
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
-  auth  = inject(AuthService);
-  theme = inject(ThemeService);
+  auth    = inject(AuthService);
+  theme   = inject(ThemeService);
+  private cvSvc = inject(CvService);
 
   // ── Navigation ────────────────────────────────────────────────────────────
   activeView = signal<View>('dashboard');
@@ -113,6 +115,122 @@ export class ShellComponent {
     { ref: 'CV-1120', contrib: 'Docker, Cloud infra',           cov: '+18%', badge: 'ready', label: 'Included' },
     { ref: 'CV-1156', contrib: 'French, client-facing delivery',cov: '+6%',  badge: 'warn',  label: 'Gap: PostgreSQL depth' },
   ];
+
+  // ── Upload state ──────────────────────────────────────────────────────────
+  uploadQueue   = signal<UploadProgress[]>([]);
+  isDragging    = signal(false);
+  uploadError   = signal('');
+
+  /**
+   * Called when user selects files via the file input or drops them.
+   * Single file → POST /api/v1/cvs with progress tracking.
+   * Multiple files → POST /api/v1/cvs/bulk (one request, per-file outcomes).
+   */
+  handleFiles(files: FileList | File[]): void {
+    const list = Array.from(files).filter(f =>
+      f.type === 'application/pdf' ||
+      f.name.toLowerCase().endsWith('.docx') ||
+      f.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    );
+
+    if (!list.length) {
+      this.uploadError.set('Only PDF and DOCX files are accepted.');
+      return;
+    }
+    this.uploadError.set('');
+
+    if (list.length === 1) {
+      // Single upload — show per-byte progress
+      const initial: UploadProgress = { filename: list[0].name, progress: 0, status: 'uploading' };
+      this.uploadQueue.update(q => [initial, ...q]);
+
+      this.cvSvc.uploadOne(list[0]).subscribe({
+        next: prog => {
+          this.uploadQueue.update(q =>
+            q.map(r => r.filename === prog.filename ? prog : r)
+          );
+        },
+        error: (prog: UploadProgress) => {
+          this.uploadQueue.update(q =>
+            q.map(r => r.filename === prog.filename ? prog : r)
+          );
+        },
+      });
+
+    } else {
+      // Bulk upload — add placeholders then replace with server outcomes
+      const placeholders: UploadProgress[] = list.map(f => ({
+        filename: f.name, progress: 50, status: 'uploading',
+      }));
+      this.uploadQueue.update(q => [...placeholders, ...q]);
+
+      this.cvSvc.uploadBulk(list).subscribe({
+        next: bulk => {
+          // Mark each file with its outcome
+          const byName = new Map<string, UploadProgress>();
+          for (const r of bulk.accepted) {
+            byName.set(r.filename, { filename: r.filename, progress: 100, status: 'done', result: r });
+          }
+          for (const d of bulk.duplicates) {
+            byName.set(d.filename, { filename: d.filename, progress: 100, status: 'error', errorMsg: 'Duplicate — already in library.' });
+          }
+          for (const f of bulk.failed) {
+            byName.set(f.filename, { filename: f.filename, progress: 0, status: 'error', errorMsg: f.reason });
+          }
+          this.uploadQueue.update(q =>
+            q.map(r => byName.get(r.filename) ?? r)
+          );
+        },
+        error: (err: Error) => {
+          this.uploadError.set(err.message);
+          this.uploadQueue.update(q =>
+            q.map(r => list.some(f => f.name === r.filename)
+              ? { ...r, status: 'error', errorMsg: 'Upload failed.' }
+              : r
+            )
+          );
+        },
+      });
+    }
+  }
+
+  onFileInput(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (files?.length) this.handleFiles(files);
+    (event.target as HTMLInputElement).value = ''; // reset so same file can be re-selected
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging.set(false);
+    if (event.dataTransfer?.files.length) {
+      this.handleFiles(event.dataTransfer.files);
+    }
+  }
+
+  clearUpload(filename: string): void {
+    this.uploadQueue.update(q => q.filter(r => r.filename !== filename));
+  }
+
+  statusLabel(p: UploadProgress): string {
+    if (p.status === 'uploading') return `${p.progress}%`;
+    if (p.status === 'processing') return 'Processing…';
+    if (p.status === 'done') return p.result?.status ?? 'READY';
+    if (p.status === 'error') return p.errorMsg ?? 'Failed';
+    return '';
+  }
+
+  badgeClass(p: UploadProgress): string {
+    if (p.status === 'error') return 'failed';
+    if (p.status === 'done') {
+      const s = p.result?.status;
+      if (s === 'READY') return 'ready';
+      if (s === 'WARNING') return 'warn';
+      if (s === 'FAILED') return 'failed';
+      return 'processing';
+    }
+    return 'processing';
+  }
 
   // ── Results data ──────────────────────────────────────────────────────────
   results = [

@@ -167,28 +167,82 @@
       <div class="grid cols-3">
         <div class="card">
           <h3 style="margin-bottom:12px">Upload CVs</h3>
-          <div class="dropzone" tabindex="0" role="button" aria-label="Upload CV files"
-               (click)="fileInput.click()" (keydown.enter)="fileInput.click()"
-               (dragover)="$event.preventDefault()" (drop)="$event.preventDefault()">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+
+          <!-- Error banner -->
+          @if (uploadError()) {
+            <div class="banner warn" style="margin-bottom:12px">{{ uploadError() }}</div>
+          }
+
+          <!-- Drop zone -->
+          <div class="dropzone"
+               tabindex="0" role="button" aria-label="Upload CV files"
+               [class.dragover]="isDragging()"
+               (click)="fileInput.click()"
+               (keydown.enter)="fileInput.click()"
+               (dragover)="$event.preventDefault(); isDragging.set(true)"
+               (dragleave)="isDragging.set(false)"
+               (drop)="onDrop($event)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>
+            </svg>
             <div style="font-size:13.5px;font-weight:600">Drag &amp; drop PDF or DOCX files</div>
             <div class="hint">or click to browse · duplicates detected automatically</div>
           </div>
-          <input #fileInput type="file" accept=".pdf,.docx" multiple style="display:none">
-          <div style="margin-top:16px">
-            @for (u of uploads; track u.name) {
-              <div class="progress-row">
-                <div class="file-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+
+          <!-- Hidden file input — accepts multiple for bulk -->
+          <input #fileInput type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                 multiple style="display:none" (change)="onFileInput($event)" />
+
+          <!-- Live upload queue -->
+          @if (uploadQueue().length) {
+            <div style="margin-top:16px">
+              @for (u of uploadQueue(); track u.filename) {
+                <div class="progress-row">
+                  <div class="file-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+                    </svg>
+                  </div>
+                  <div class="info">
+                    <div class="name">
+                      {{ u.filename }}
+                      <span class="badge" [class]="badgeClass(u)" style="margin-left:6px">
+                        {{ statusLabel(u) }}
+                      </span>
+                    </div>
+                    @if (u.status === 'uploading') {
+                      <div class="bar" style="margin-top:6px">
+                        <div [style.width.%]="u.progress" style="height:100%;background:var(--brand);border-radius:4px"></div>
+                      </div>
+                    }
+                    @if (u.status === 'error' && u.errorMsg) {
+                      <div class="meta" style="color:var(--red)">{{ u.errorMsg }}</div>
+                    }
+                  </div>
+                  <button class="btn ghost small" style="padding:4px 8px;font-size:11px"
+                          (click)="clearUpload(u.filename)" aria-label="Dismiss">✕</button>
                 </div>
-                <div class="info">
-                  <div class="name">{{ u.name }} <span class="badge" [class]="u.badge" style="margin-left:6px">{{ u.badgeText }}</span></div>
-                  <div class="meta">{{ u.meta }}</div>
-                  <div class="bar"><div [style.width]="u.barW" [style.background]="u.barColor || 'var(--brand)'"></div></div>
+              }
+            </div>
+          } @else {
+            <!-- Static demo rows while queue is empty -->
+            <div style="margin-top:16px">
+              @for (u of uploads; track u.name) {
+                <div class="progress-row">
+                  <div class="file-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+                    </svg>
+                  </div>
+                  <div class="info">
+                    <div class="name">{{ u.name }} <span class="badge" [class]="u.badge" style="margin-left:6px">{{ u.badgeText }}</span></div>
+                    <div class="meta">{{ u.meta }}</div>
+                    <div class="bar"><div [style.width]="u.barW" [style.background]="u.barColor || 'var(--brand)'"></div></div>
+                  </div>
                 </div>
-              </div>
-            }
-          </div>
+              }
+            </div>
+          }
         </div>
         <div class="card">
           <h3 style="margin-bottom:8px">Batch summary</h3>

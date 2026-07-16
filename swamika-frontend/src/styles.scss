@@ -146,6 +146,7 @@ tr:last-child td{border-bottom:none}
 .dropzone{border:1.5px dashed var(--border);border-radius:var(--radius);
   padding:34px 20px;text-align:center;background:var(--surface-2);cursor:pointer}
 .dropzone:hover{border-color:var(--brand)}
+.dropzone.dragover{border-color:var(--brand);background:var(--brand-soft)}
 .dropzone svg{color:var(--brand);margin-bottom:10px}
 .dropzone .hint{font-size:12px;color:var(--text-muted);margin-top:4px}
 .progress-row{display:flex;align-items:center;gap:12px;padding:10px 4px}
