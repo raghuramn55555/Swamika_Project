@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { UserRole } from '../../core/models/user.models';
+import { ScoreMeterComponent } from '../index';
 
 type View = 'dashboard'|'library'|'search'|'results'|'team'|'shortlists'|'admin';
 
@@ -38,7 +39,7 @@ const NAV_ROLES: Record<View, UserRole[]> = {
 @Component({
   selector: 'sw-shell',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ScoreMeterComponent],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
 })

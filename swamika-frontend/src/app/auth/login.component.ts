@@ -137,41 +137,32 @@ import { ThemeService } from '../core/services/theme.service';
       position: relative; overflow: hidden;
     }
     @media (max-width: 860px) { .brand-panel { display: none; } }
-
     .brand-inner { position: relative; z-index: 2; max-width: 380px; color: #fff; }
-
     .brand-logo {
       width: 52px; height: 52px; border-radius: 14px;
       background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       margin-bottom: 18px; color: #fff;
     }
-
     .brand-name { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .brand-sub  { font-size: 0.875rem; color: rgba(255,255,255,0.65); margin-bottom: 32px; }
-
     .wf-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.1em; color: rgba(255,255,255,0.45); margin-bottom: 16px;
     }
-
-    .workflow { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
-
+    .workflow { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
     .workflow li {
       display: flex; align-items: flex-start; gap: 12px;
       padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
       &:last-child { border-bottom: none; }
     }
-
     .wf-icon {
       width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
       background: rgba(255,255,255,0.12);
       display: flex; align-items: center; justify-content: center; color: #80cbc4;
     }
-
     .wf-title { display: block; font-size: 0.875rem; font-weight: 600; color: #fff; }
     .wf-desc  { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
-
     .brand-foot { font-size: 11px; color: rgba(255,255,255,0.35); position: relative; z-index: 2; }
 
     /* ── Form panel ──────────────────────────────────────────────────────── */
@@ -181,30 +172,16 @@ import { ThemeService } from '../core/services/theme.service';
     }
     @media (max-width: 860px) { .form-panel { flex: 1; } }
 
-    /* Theme toggle button — top right */
+    /* Theme toggle — top right of form panel */
     .theme-toggle-btn {
       position: absolute; top: 20px; right: 24px;
       width: 38px; height: 38px; border-radius: 10px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--border); background: var(--surface);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: background 0.2s, border-color 0.2s, transform 0.15s;
-      color: var(--text-muted);
-
-      i { font-size: 16px; transition: color 0.2s; }
-
-      /* Sun icon — shown in dark mode, amber colour */
-      .fa-sun  { color: #f59e0b; }
-
-      /* Moon icon — shown in light mode, indigo colour */
-      .fa-moon { color: #6366f1; }
-
-      &:hover {
-        background: var(--surface-2);
-        border-color: var(--brand);
-        transform: scale(1.08);
-      }
+      .fa-sun  { font-size: 16px; color: #f59e0b; }
+      .fa-moon { font-size: 16px; color: #6366f1; }
+      &:hover { background: var(--surface-2); border-color: var(--brand); transform: scale(1.08); }
       &:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
     }
 
@@ -212,18 +189,12 @@ import { ThemeService } from '../core/services/theme.service';
       flex: 1; display: flex; flex-direction: column; justify-content: center;
       padding: 40px 44px; max-width: 420px; width: 100%; margin: 0 auto;
     }
-
     h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
     .form-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
 
-    /* ── Fields ──────────────────────────────────────────────────────────── */
+    /* Fields — use global tokens, no hardcoded colors */
     .field-wrap { margin-bottom: 16px; }
-
-    .field-label {
-      display: block; font-size: 12px; font-weight: 600;
-      color: var(--text-muted); margin-bottom: 6px;
-    }
-
+    .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
     .field-input {
       width: 100%; border: 1px solid var(--border); border-radius: 8px;
       padding: 10px 12px; font-size: 13px;
@@ -232,35 +203,27 @@ import { ThemeService } from '../core/services/theme.service';
       &:focus { outline: none; border-color: var(--brand); }
       &.err   { border-color: var(--red); }
     }
-
     .input-wrap { position: relative; }
     .input-wrap .field-input { padding-right: 40px; }
-
     .vis-btn {
       position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
       color: var(--text-muted); display: flex; align-items: center;
       &:hover { color: var(--text); }
     }
-
     .field-err { font-size: 11.5px; color: var(--red); margin-top: 4px; display: block; }
 
-    /* ── Checkbox row ────────────────────────────────────────────────────── */
     .check-row {
       display: flex; align-items: center; gap: 8px;
-      font-size: 12.5px; color: var(--text-muted); cursor: pointer;
-      margin-bottom: 20px;
+      font-size: 12.5px; color: var(--text-muted); cursor: pointer; margin-bottom: 20px;
       input { accent-color: var(--brand); width: 14px; height: 14px; cursor: pointer; }
     }
-
-    /* ── Error banner ────────────────────────────────────────────────────── */
     .err-banner {
-      background: var(--red-soft); border: 1px solid var(--red);
-      color: var(--red); border-radius: 8px;
-      padding: 10px 14px; font-size: 12.5px; margin-bottom: 16px;
+      background: var(--red-soft); border: 1px solid var(--red); color: var(--red);
+      border-radius: 8px; padding: 10px 14px; font-size: 12.5px; margin-bottom: 16px;
     }
 
-    /* ── Submit button ───────────────────────────────────────────────────── */
+    /* Submit — extends global .btn */
     .submit-btn {
       width: 100%; padding: 11px; border: none; border-radius: 8px;
       background: var(--brand); color: #fff;
@@ -270,21 +233,13 @@ import { ThemeService } from '../core/services/theme.service';
       &:hover:not(:disabled) { background: var(--brand-strong); }
       &:disabled { opacity: 0.7; cursor: not-allowed; }
     }
-
-    /* ── Spinner ─────────────────────────────────────────────────────────── */
     .spinner {
       width: 16px; height: 16px; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
       animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Footer ──────────────────────────────────────────────────────────── */
-    .form-foot {
-      font-size: 11px; color: var(--text-faint);
-      text-align: center; margin-top: 36px;
-    }
+    .form-foot { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 36px; }
   `],
 })
 export class LoginComponent {

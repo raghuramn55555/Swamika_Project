@@ -257,10 +257,7 @@
           </div>
           <div class="card">
             <h3 style="margin-bottom:6px">Search confidence</h3>
-            <div class="score-seg" style="margin-top:10px">
-              <div class="top"><span>Criteria coverage</span><span class="val">High</span></div>
-              <div class="meter conf"><div style="width:88%"></div></div>
-            </div>
+          <sw-score-meter label="Criteria coverage" [value]="88" type="conf" displayText="High" style="margin-top:10px;display:block" />
             <p style="font-size:11.5px;color:var(--text-faint);margin-top:12px">Editable — proposed criteria below can be adjusted before running the search.</p>
           </div>
         </div>
@@ -361,18 +358,9 @@
 
           <!-- Score chip -->
           <div class="score-chip">
-            <div class="score-seg">
-              <div class="top"><span>Match</span><span class="val">{{ r.match }}%</span></div>
-              <div class="meter match"><div [style.width.%]="r.match"></div></div>
-            </div>
-            <div class="score-seg">
-              <div class="top"><span>Confidence</span><span class="val">{{ r.confidence }}%</span></div>
-              <div class="meter conf"><div [style.width.%]="r.confidence"></div></div>
-            </div>
-            <div class="score-seg">
-              <div class="top"><span>Parsing quality</span><span class="val">{{ r.parseQuality }}</span></div>
-              <div class="meter parse"><div [style.width.%]="r.parseWidth"></div></div>
-            </div>
+            <sw-score-meter label="Match"          [value]="r.match"      type="match" />
+            <sw-score-meter label="Confidence"     [value]="r.confidence" type="conf"  />
+            <sw-score-meter label="Parsing quality" [value]="r.parseWidth" type="parse" [displayText]="r.parseQuality" />
           </div>
 
           <!-- Skills -->
@@ -449,8 +437,10 @@
         </div>
         <div class="card">
           <h3 style="margin-bottom:8px">Combined coverage</h3>
-          <div class="score-seg"><div class="top"><span>Skill coverage</span><span class="val">92%</span></div><div class="meter conf"><div style="width:92%"></div></div></div>
-          <div class="score-seg" style="margin-top:10px"><div class="top"><span>Overlap</span><span class="val">Low</span></div><div class="meter match"><div style="width:22%"></div></div></div>
+          <div class="score-chip" style="flex-direction:column;gap:10px">
+            <sw-score-meter label="Skill coverage" [value]="92" type="conf" />
+            <sw-score-meter label="Overlap"         [value]="22" type="match" displayText="Low" />
+          </div>
         </div>
       </div>
       @if (teamProposed) {
