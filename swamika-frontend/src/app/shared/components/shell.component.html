@@ -119,10 +119,12 @@
 
       <div class="section-title"><h3>Service health</h3></div>
       <div class="grid cols-4">
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px">Document parser</span><span class="badge ready">Operational</span></div>
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px">Embedding service</span><span class="badge ready">Operational</span></div>
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px">LLM extraction</span><span class="badge warn">Degraded</span></div>
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px">Search index</span><span class="badge ready">Operational</span></div>
+        @for (h of health; track h.name) {
+          <div class="card" style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:13px">{{ h.name }}</span>
+            <span class="badge" [class]="h.badge">{{ h.text }}</span>
+          </div>
+        }
       </div>
 
       <div class="section-title">
@@ -132,9 +134,16 @@
       <div class="card" style="padding:0">
         <table><thead><tr><th>Query</th><th>Mode</th><th>Results</th><th>Blind</th><th>Run</th><th></th></tr></thead>
         <tbody>
-          <tr><td>Senior Java / Spring Boot engineer</td><td>Vacancy</td><td>34</td><td>On</td><td>12 min ago</td><td><span class="link" (click)="goto('results')">Open →</span></td></tr>
-          <tr><td>"React developer with AWS and CI/CD"</td><td>Natural language</td><td>19</td><td>Off</td><td>1 hr ago</td><td><span class="link" (click)="goto('results')">Open →</span></td></tr>
-          <tr><td>Skills: Python, Django, PostgreSQL · 3+ yrs</td><td>Structured</td><td>27</td><td>Off</td><td>Yesterday</td><td><span class="link" (click)="goto('results')">Open →</span></td></tr>
+          @for (s of recentSearches; track s.query) {
+            <tr>
+              <td>{{ s.query }}</td>
+              <td>{{ s.mode }}</td>
+              <td>{{ s.count }}</td>
+              <td>{{ s.blind }}</td>
+              <td>{{ s.ago }}</td>
+              <td><span class="link" (click)="goto('results')">Open →</span></td>
+            </tr>
+          }
         </tbody></table>
       </div>
 
@@ -167,22 +176,18 @@
           </div>
           <input #fileInput type="file" accept=".pdf,.docx" multiple style="display:none">
           <div style="margin-top:16px">
-            <div class="progress-row">
-              <div class="file-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-              <div class="info"><div class="name">A_Rahman_CV.pdf <span class="badge ready" style="margin-left:6px">Ready</span></div><div class="meta">1.2 MB · structuring complete</div><div class="bar"><div style="width:100%"></div></div></div>
-            </div>
-            <div class="progress-row">
-              <div class="file-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-              <div class="info"><div class="name">K_Ito_Resume.docx <span class="badge processing" style="margin-left:6px">Embedding</span></div><div class="meta">640 KB · generating vectors</div><div class="bar"><div style="width:64%"></div></div></div>
-            </div>
-            <div class="progress-row">
-              <div class="file-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-              <div class="info"><div class="name">scan_0091.pdf <span class="badge warn" style="margin-left:6px">OCR required</span></div><div class="meta">Insufficient extractable text — image-only document</div><div class="bar"><div style="width:100%;background:var(--amber)"></div></div></div>
-            </div>
-            <div class="progress-row">
-              <div class="file-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-              <div class="info"><div class="name">CV_corrupted.docx <span class="badge failed" style="margin-left:6px">Failed</span></div><div class="meta">Unreadable file — retry or replace</div><div class="bar"><div style="width:100%;background:var(--red)"></div></div></div>
-            </div>
+            @for (u of uploads; track u.name) {
+              <div class="progress-row">
+                <div class="file-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+                </div>
+                <div class="info">
+                  <div class="name">{{ u.name }} <span class="badge" [class]="u.badge" style="margin-left:6px">{{ u.badgeText }}</span></div>
+                  <div class="meta">{{ u.meta }}</div>
+                  <div class="bar"><div [style.width]="u.barW" [style.background]="u.barColor || 'var(--brand)'"></div></div>
+                </div>
+              </div>
+            }
           </div>
         </div>
         <div class="card">
@@ -202,59 +207,29 @@
       <div class="card" style="padding:0">
         <table>
           <thead>
-            <tr>
-              <th>Candidate ref</th><th>Title</th><th>Status</th>
-              <th>Uploaded</th><th>Evidence quality</th><th></th>
-            </tr>
+            <tr><th>Candidate ref</th><th>Title</th><th>Status</th><th>Uploaded</th><th>Evidence quality</th><th></th></tr>
           </thead>
           <tbody>
-            <!-- Row actions differ by role -->
-            <tr>
-              <td class="mono">CV-1042</td><td>Senior Java Engineer</td>
-              <td><span class="badge ready">Ready</span></td>
-              <td>Today</td><td>High</td>
-              <td style="display:flex;gap:6px;align-items:center">
-                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
-                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-                  <button class="btn ghost small">Reprocess</button>
-                  <button class="btn danger small">Delete</button>
-                }
-              </td>
-            </tr>
-            <tr>
-              <td class="mono">CV-1043</td><td>Frontend Developer</td>
-              <td><span class="badge ready">Ready</span></td>
-              <td>Today</td><td>High</td>
-              <td style="display:flex;gap:6px;align-items:center">
-                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
-                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-                  <button class="btn ghost small">Reprocess</button>
-                  <button class="btn danger small">Delete</button>
-                }
-              </td>
-            </tr>
-            <tr>
-              <td class="mono">CV-1044</td><td>Data Engineer</td>
-              <td><span class="badge warn">Warning</span></td>
-              <td>Yesterday</td><td>Medium</td>
-              <td style="display:flex;gap:6px;align-items:center">
-                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
-                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-                  <button class="btn ghost small">Reprocess</button>
-                  <button class="btn danger small">Delete</button>
-                }
-              </td>
-            </tr>
-            <tr>
-              <td class="mono">CV-1039</td><td>QA Engineer</td>
-              <td><span class="badge failed">Failed</span></td>
-              <td>2 days ago</td><td>—</td>
-              <td>
-                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-                  <button class="btn ghost small">Retry</button>
-                }
-              </td>
-            </tr>
+            @for (row of library; track row.ref) {
+              <tr>
+                <td class="mono">{{ row.ref }}</td>
+                <td>{{ row.title }}</td>
+                <td><span class="badge" [class]="row.badge">{{ row.badgeText }}</span></td>
+                <td>{{ row.uploaded }}</td>
+                <td>{{ row.quality }}</td>
+                <td style="display:flex;gap:6px;align-items:center">
+                  @if (!row.canRetry) {
+                    <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
+                    @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                      <button class="btn ghost small">Reprocess</button>
+                      <button class="btn danger small">Delete</button>
+                    }
+                  } @else if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                    <button class="btn ghost small">Retry</button>
+                  }
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -368,119 +343,91 @@
         </div>
       </div>
 
-      <!-- Result card 1 -->
-      <div class="result-card">
-        <div class="result-head">
-          <div class="result-id">
-            <div class="avatar">CV</div>
-            <div>
-              <div class="name">CV-1042</div>
-              <div class="role">Current role: Senior Java Engineer · Relevant experience: 7.4 yrs</div>
+      <!-- Result cards — driven by results[] array in TypeScript -->
+      @for (r of results; track r.ref) {
+        <div class="result-card">
+          <div class="result-head">
+            <div class="result-id">
+              <div class="avatar">CV</div>
+              <div>
+                <div class="name">{{ r.ref }}</div>
+                <div class="role">{{ r.role }}</div>
+              </div>
             </div>
+            <label class="check-compare">
+              <input type="checkbox" (change)="onCompareChange($any($event.target).checked)"> Select to compare
+            </label>
           </div>
-          <label class="check-compare">
-            <input type="checkbox" (change)="onCompareChange($any($event.target).checked)"> Select to compare
-          </label>
-        </div>
-        <div class="score-chip">
-          <div class="score-seg"><div class="top"><span>Match</span><span class="val">89%</span></div><div class="meter match"><div style="width:89%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Confidence</span><span class="val">82%</span></div><div class="meter conf"><div style="width:82%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Parsing quality</span><span class="val">High</span></div><div class="meter parse"><div style="width:95%"></div></div></div>
-        </div>
-        <div class="skill-row">
-          <div class="grp"><b>Matched</b><span class="chip ok">Java</span><span class="chip ok">Spring Boot</span><span class="chip ok">PostgreSQL</span><span class="chip ok">REST</span></div>
-          <div class="grp"><b>Missing must-have</b><span class="chip ok" style="background:var(--green-soft);color:var(--green)">None</span></div>
-          <div class="grp"><b>Preferred gap</b><span class="chip gap">French</span></div>
-        </div>
-        <div class="evidence-line"><span class="pg">Pg 2</span><span class="quote">"Migrated twelve services to Spring Boot 3.2…"</span></div>
-        <div class="result-actions">
-          <button class="btn ghost small" (click)="openDrawer()">Explain</button>
-          <button class="btn ghost small">Compare</button>
-          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
-          }
-          @if (auth.hasRole('REVIEWER')) {
-            <button class="btn ghost small">Relevant</button>
-            <button class="btn ghost small">Not relevant</button>
-          }
-        </div>
-      </div>
 
-      <!-- Result card 2 -->
-      <div class="result-card">
-        <div class="result-head">
-          <div class="result-id">
-            <div class="avatar">CV</div>
-            <div>
-              <div class="name">CV-1078</div>
-              <div class="role">Current role: Backend Developer · Relevant experience: 4.1 yrs</div>
+          <!-- Score chip -->
+          <div class="score-chip">
+            <div class="score-seg">
+              <div class="top"><span>Match</span><span class="val">{{ r.match }}%</span></div>
+              <div class="meter match"><div [style.width.%]="r.match"></div></div>
+            </div>
+            <div class="score-seg">
+              <div class="top"><span>Confidence</span><span class="val">{{ r.confidence }}%</span></div>
+              <div class="meter conf"><div [style.width.%]="r.confidence"></div></div>
+            </div>
+            <div class="score-seg">
+              <div class="top"><span>Parsing quality</span><span class="val">{{ r.parseQuality }}</span></div>
+              <div class="meter parse"><div [style.width.%]="r.parseWidth"></div></div>
             </div>
           </div>
-          <label class="check-compare">
-            <input type="checkbox" (change)="onCompareChange($any($event.target).checked)"> Select to compare
-          </label>
-        </div>
-        <div class="score-chip">
-          <div class="score-seg"><div class="top"><span>Match</span><span class="val">71%</span></div><div class="meter match"><div style="width:71%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Confidence</span><span class="val">64%</span></div><div class="meter conf"><div style="width:64%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Parsing quality</span><span class="val">Medium</span></div><div class="meter parse"><div style="width:60%"></div></div></div>
-        </div>
-        <div class="skill-row">
-          <div class="grp"><b>Matched</b><span class="chip ok">Java</span><span class="chip ok">Spring Boot</span><span class="chip ok">REST</span></div>
-          <div class="grp"><b>Missing must-have</b><span class="chip missing">PostgreSQL</span></div>
-          <div class="grp"><b>Preferred gap</b><span class="chip gap">Docker</span><span class="chip gap">French</span></div>
-        </div>
-        <div class="evidence-line"><span class="pg">Pg 1</span><span class="quote">"Built REST services using Spring Boot; database layer used MySQL."</span></div>
-        <div class="result-actions">
-          <button class="btn ghost small" (click)="openDrawer()">Explain</button>
-          <button class="btn ghost small">Compare</button>
-          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
-          }
-          @if (auth.hasRole('REVIEWER')) {
-            <button class="btn ghost small">Relevant</button>
-            <button class="btn ghost small">Not relevant</button>
-          }
-        </div>
-      </div>
 
-      <!-- Result card 3 -->
-      <div class="result-card">
-        <div class="result-head">
-          <div class="result-id">
-            <div class="avatar">CV</div>
-            <div>
-              <div class="name">CV-1101</div>
-              <div class="role">Current role: Software Engineer · Relevant experience: 3.0 yrs</div>
-            </div>
+          <!-- Skills -->
+          <div class="skill-row">
+            @if (r.matched.length) {
+              <div class="grp">
+                <b>Matched</b>
+                @for (s of r.matched; track s) { <span class="chip ok">{{ s }}</span> }
+              </div>
+            }
+            @if (r.missing.length) {
+              <div class="grp">
+                <b>Missing must-have</b>
+                @for (s of r.missing; track s) { <span class="chip missing">{{ s }}</span> }
+              </div>
+            } @else if (!r.unverified.length) {
+              <div class="grp">
+                <b>Missing must-have</b>
+                <span class="chip ok" style="background:var(--green-soft);color:var(--green)">None</span>
+              </div>
+            }
+            @if (r.unverified.length) {
+              <div class="grp">
+                <b>Unverified</b>
+                @for (s of r.unverified; track s) { <span class="chip gap">{{ s }}</span> }
+              </div>
+            }
+            @if (r.gaps.length) {
+              <div class="grp">
+                <b>Preferred gap</b>
+                @for (s of r.gaps; track s) { <span class="chip gap">{{ s }}</span> }
+              </div>
+            }
           </div>
-          <label class="check-compare">
-            <input type="checkbox" (change)="onCompareChange($any($event.target).checked)"> Select to compare
-          </label>
+
+          <!-- Evidence -->
+          <div class="evidence-line" [style]="r.evidenceBorder">
+            <span class="pg" [style]="r.evidencePgStyle">{{ r.evidencePg }}</span>
+            <span class="quote">{{ r.evidenceText }}</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="result-actions">
+            <button class="btn ghost small" (click)="openDrawer()">Explain</button>
+            <button class="btn ghost small">Compare</button>
+            @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+              <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+            }
+            @if (auth.hasRole('REVIEWER')) {
+              <button class="btn ghost small">Relevant</button>
+              <button class="btn ghost small">Not relevant</button>
+            }
+          </div>
         </div>
-        <div class="score-chip">
-          <div class="score-seg"><div class="top"><span>Match</span><span class="val">58%</span></div><div class="meter match"><div style="width:58%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Confidence</span><span class="val">41%</span></div><div class="meter conf"><div style="width:41%"></div></div></div>
-          <div class="score-seg"><div class="top"><span>Parsing quality</span><span class="val">Low</span></div><div class="meter parse"><div style="width:35%"></div></div></div>
-        </div>
-        <div class="skill-row">
-          <div class="grp"><b>Matched</b><span class="chip ok">Java</span></div>
-          <div class="grp"><b>Unverified</b><span class="chip gap">Spring Boot (self-listed, no evidence)</span></div>
-          <div class="grp"><b>Missing must-have</b><span class="chip missing">PostgreSQL</span></div>
-        </div>
-        <div class="evidence-line" style="border-left-color:var(--amber)"><span class="pg" style="background:var(--amber-soft);color:var(--amber)">Weak</span><span class="quote">Skill listed in summary keywords only — no supporting project text found.</span></div>
-        <div class="result-actions">
-          <button class="btn ghost small" (click)="openDrawer()">Explain</button>
-          <button class="btn ghost small">Compare</button>
-          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
-            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
-          }
-          @if (auth.hasRole('REVIEWER')) {
-            <button class="btn ghost small">Relevant</button>
-            <button class="btn ghost small">Not relevant</button>
-          }
-        </div>
-      </div>
+      }
     </section>
     }
 

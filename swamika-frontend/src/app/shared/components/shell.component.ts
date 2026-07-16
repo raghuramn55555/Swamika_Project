@@ -1,4 +1,4 @@
-import { Component, signal, inject, HostListener, computed } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -113,13 +113,90 @@ export class ShellComponent {
     { ref: 'CV-1156', contrib: 'French, client-facing delivery',cov: '+6%',  badge: 'warn',  label: 'Gap: PostgreSQL depth' },
   ];
 
+  // ── Results data ──────────────────────────────────────────────────────────
+  results = [
+    {
+      ref:     'CV-1042',
+      role:    'Current role: Senior Java Engineer · Relevant experience: 7.4 yrs',
+      match:   89, confidence: 82, parseQuality: 'High', parseWidth: 95,
+      matched: ['Java', 'Spring Boot', 'PostgreSQL', 'REST'],
+      missing: [] as string[],
+      unverified: [] as string[],
+      gaps:    ['French'],
+      evidenceBorder: '',
+      evidencePgStyle: '',
+      evidencePg:   'Pg 2',
+      evidenceText: '"Migrated twelve services to Spring Boot 3.2…"',
+      weak: false,
+    },
+    {
+      ref:     'CV-1078',
+      role:    'Current role: Backend Developer · Relevant experience: 4.1 yrs',
+      match:   71, confidence: 64, parseQuality: 'Medium', parseWidth: 60,
+      matched: ['Java', 'Spring Boot', 'REST'],
+      missing: ['PostgreSQL'],
+      unverified: [] as string[],
+      gaps:    ['Docker', 'French'],
+      evidenceBorder: '',
+      evidencePgStyle: '',
+      evidencePg:   'Pg 1',
+      evidenceText: '"Built REST services using Spring Boot; database layer used MySQL."',
+      weak: false,
+    },
+    {
+      ref:     'CV-1101',
+      role:    'Current role: Software Engineer · Relevant experience: 3.0 yrs',
+      match:   58, confidence: 41, parseQuality: 'Low', parseWidth: 35,
+      matched: ['Java'],
+      missing: ['PostgreSQL'],
+      unverified: ['Spring Boot (self-listed, no evidence)'],
+      gaps:    [] as string[],
+      evidenceBorder: 'border-left-color:var(--amber)',
+      evidencePgStyle: 'background:var(--amber-soft);color:var(--amber)',
+      evidencePg:   'Weak',
+      evidenceText: 'Skill listed in summary keywords only — no supporting project text found.',
+      weak: true,
+    },
+  ];
+
+  // ── Upload progress rows ───────────────────────────────────────────────────
+  uploads = [
+    { name: 'A_Rahman_CV.pdf',    badge: 'ready',      badgeText: 'Ready',       meta: '1.2 MB · structuring complete',           barW: '100%', barColor: '' },
+    { name: 'K_Ito_Resume.docx',  badge: 'processing', badgeText: 'Embedding',   meta: '640 KB · generating vectors',              barW: '64%',  barColor: '' },
+    { name: 'scan_0091.pdf',      badge: 'warn',       badgeText: 'OCR required',meta: 'Insufficient extractable text',            barW: '100%', barColor: 'var(--amber)' },
+    { name: 'CV_corrupted.docx',  badge: 'failed',     badgeText: 'Failed',      meta: 'Unreadable file — retry or replace',       barW: '100%', barColor: 'var(--red)' },
+  ];
+
+  // ── Library rows ───────────────────────────────────────────────────────────
+  library = [
+    { ref: 'CV-1042', title: 'Senior Java Engineer', badge: 'ready',  badgeText: 'Ready',   uploaded: 'Today',     quality: 'High',   canRetry: false },
+    { ref: 'CV-1043', title: 'Frontend Developer',   badge: 'ready',  badgeText: 'Ready',   uploaded: 'Today',     quality: 'High',   canRetry: false },
+    { ref: 'CV-1044', title: 'Data Engineer',        badge: 'warn',   badgeText: 'Warning', uploaded: 'Yesterday', quality: 'Medium', canRetry: false },
+    { ref: 'CV-1039', title: 'QA Engineer',          badge: 'failed', badgeText: 'Failed',  uploaded: '2 days ago',quality: '—',      canRetry: true  },
+  ];
+
+  // ── Service health ────────────────────────────────────────────────────────
+  health = [
+    { name: 'Document parser',    badge: 'ready', text: 'Operational' },
+    { name: 'Embedding service',  badge: 'ready', text: 'Operational' },
+    { name: 'LLM extraction',     badge: 'warn',  text: 'Degraded'    },
+    { name: 'Search index',       badge: 'ready', text: 'Operational' },
+  ];
+
+  // ── Recent searches (dashboard) ───────────────────────────────────────────
+  recentSearches = [
+    { query: 'Senior Java / Spring Boot engineer',   mode: 'Vacancy',          count: 34, blind: 'On',  ago: '12 min ago' },
+    { query: '"React developer with AWS and CI/CD"', mode: 'Natural language', count: 19, blind: 'Off', ago: '1 hr ago'   },
+    { query: 'Skills: Python, Django, PostgreSQL',   mode: 'Structured',       count: 27, blind: 'Off', ago: 'Yesterday'  },
+  ];
+
   // ── Shortlists ────────────────────────────────────────────────────────────
   slStatus = ['Shortlisted', 'Interviewing', 'On hold', 'Rejected'];
 
   sl = [
-    { ref: 'CV-1042', score: '89%', status: 'Shortlisted',  note: 'Strong fit, fast follow-up'   },
-    { ref: 'CV-1078', score: '71%', status: 'Interviewing', note: 'Needs PostgreSQL screen'       },
-    { ref: 'CV-1120', score: '66%', status: 'On hold',      note: '—'                             },
+    { ref: 'CV-1042', score: '89%', status: 'Shortlisted',  note: 'Strong fit, fast follow-up' },
+    { ref: 'CV-1078', score: '71%', status: 'Interviewing', note: 'Needs PostgreSQL screen'     },
+    { ref: 'CV-1120', score: '66%', status: 'On hold',      note: '—'                           },
   ];
 
   removeFromShortlist(ref: string) {
