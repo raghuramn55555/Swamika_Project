@@ -1,8 +1,9 @@
-import { Component, signal, inject, HostListener } from '@angular/core';
+import { Component, signal, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { UserRole } from '../../core/models/user.models';
 
 type View = 'dashboard'|'library'|'search'|'results'|'team'|'shortlists'|'admin';
 
@@ -14,6 +15,24 @@ const TITLES: Record<View, [string, string]> = {
   team:       ['Team Composer',  'Propose a team maximizing combined coverage'],
   shortlists: ['Shortlists',     'Saved candidates, notes, statuses and export'],
   admin:      ['Administration', 'Aliases, models, thresholds, retention and audit'],
+};
+
+/**
+ * Which roles can see each nav item — sourced from the SRS Role Behavior table.
+ *
+ * ADMINISTRATOR  — everything
+ * RECRUITER      — all except admin
+ * REVIEWER       — dashboard, search, results, shortlists (view shared)
+ * AUDITOR        — dashboard, admin (audit trail only)
+ */
+const NAV_ROLES: Record<View, UserRole[]> = {
+  dashboard:  ['ADMINISTRATOR','RECRUITER','REVIEWER','AUDITOR'],
+  library:    ['ADMINISTRATOR','RECRUITER'],
+  search:     ['ADMINISTRATOR','RECRUITER','REVIEWER'],
+  results:    ['ADMINISTRATOR','RECRUITER','REVIEWER'],
+  team:       ['ADMINISTRATOR','RECRUITER'],
+  shortlists: ['ADMINISTRATOR','RECRUITER','REVIEWER'],
+  admin:      ['ADMINISTRATOR','AUDITOR'],
 };
 
 @Component({
@@ -33,9 +52,13 @@ export class ShellComponent {
   get title()    { return TITLES[this.activeView()][0]; }
   get subtitle() { return TITLES[this.activeView()][1]; }
 
-  goto(v: View) {
-    this.activeView.set(v);
-    window.scrollTo(0, 0);
+  goto(v: View) { this.activeView.set(v); window.scrollTo(0, 0); }
+
+  /** Returns true if the current user's role is allowed to see this nav item */
+  canSee(view: View): boolean {
+    const role = this.auth.currentUser()?.role;
+    if (!role) return false;
+    return NAV_ROLES[view].includes(role);
   }
 
   // ── Blind mode ────────────────────────────────────────────────────────────
@@ -51,9 +74,9 @@ export class ShellComponent {
   onEsc() { this.closeDrawer(); }
 
   // ── Search view ───────────────────────────────────────────────────────────
-  activeTab     = signal('vacancy');
-  activeFilter  = signal('all');
-  compareCount  = signal(0);
+  activeTab       = signal('vacancy');
+  activeFilter    = signal('all');
+  compareCount    = signal(0);
   criteriaVisible = false;
 
   vacancyText = `We are hiring a Senior Backend Engineer to lead our Java/Spring Boot services. Must have 5+ years with Spring Boot and PostgreSQL, strong REST API design, and experience with Docker. French language skills preferred. Based in Lyon, hybrid.`;
@@ -67,9 +90,7 @@ export class ShellComponent {
     { type: 'pref', name: 'Location — Lyon (hybrid)',weight: 30 },
   ];
 
-  extractCriteria() {
-    this.criteriaVisible = true;
-  }
+  extractCriteria() { this.criteriaVisible = true; }
 
   setTab(t: string)    { this.activeTab.set(t); this.criteriaVisible = false; }
   setFilter(f: string) { this.activeFilter.set(f); }
@@ -79,8 +100,8 @@ export class ShellComponent {
   }
 
   // ── Team Composer ─────────────────────────────────────────────────────────
-  teamSize    = '4';
-  teamBase    = 'Senior Java / Spring Boot engineer (last search)';
+  teamSize     = '4';
+  teamBase     = 'Senior Java / Spring Boot engineer (last search)';
   teamProposed = false;
 
   proposeTeam() { this.teamProposed = true; }
@@ -106,6 +127,6 @@ export class ShellComponent {
   }
 
   exportShortlist() {
-    alert('Export functionality will be connected to the backend API (POST /api/v1/shortlists/{id}/export).');
+    alert('Export will be wired to POST /api/v1/shortlists/{id}/export.');
   }
 }

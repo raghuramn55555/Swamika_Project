@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { TokenService } from './token.service';
 import {
-  UserProfile, UserRole, LoginRequest, RegisterRequest,
+  UserProfile, UserRole, LoginRequest,
   AuthResponse, ApiProblem,
   ROLE_LABELS, ROLE_PERMISSIONS,
 } from '../models/user.models';
@@ -50,22 +50,6 @@ export class AuthService {
       return { ok: true };
     } catch (err) {
       if (this.isNetworkError(err)) return this.mockLogin(req);
-      return { ok: false, error: this.extractError(err), code: this.extractCode(err) };
-    }
-  }
-
-  // ── Register ──────────────────────────────────────────────────────────────
-  async register(req: RegisterRequest): Promise<ServiceResult> {
-    if (!BACKEND_AVAILABLE) return this.mockRegister(req);
-
-    try {
-      const res = await firstValueFrom(
-        this.http.post<AuthResponse>(`${API}/auth/register`, req)
-      );
-      this.applyAuthResponse(res);
-      return { ok: true };
-    } catch (err) {
-      if (this.isNetworkError(err)) return this.mockRegister(req);
       return { ok: false, error: this.extractError(err), code: this.extractCode(err) };
     }
   }
@@ -158,29 +142,15 @@ export class AuthService {
     return '';
   }
 
-  // ── Mock implementation (no backend) ─────────────────────────────────────
-  private readonly MOCK_USERS_KEY = 'sw_mock_users';
-
+  // ── Mock login (no backend — demo accounts only) ─────────────────────────
   private mockLogin(req: LoginRequest): ServiceResult {
-    const users = this.getMockUsers();
-    const stored = users.find(
-      u => u.email.toLowerCase() === req.email.toLowerCase() && u._pwd === req.password
-    );
-    const demo = this.getDemoUser(req.email, req.password);
-    const user: UserProfile | null = stored ?? demo;
-
+    const user = this.getDemoUser(req.email, req.password);
     if (!user) {
-      const emailKnown = users.some(
-        u => u.email.toLowerCase() === req.email.toLowerCase()
-      );
       return {
         ok: false,
-        error: emailKnown
-          ? 'Incorrect password. Please try again.'
-          : 'No account found with this email address. Please check your credentials.',
+        error: 'No account found. Use a demo account: admin@swamika.be, recruiter@swamika.be, reviewer@swamika.be or auditor@swamika.be with any 6+ character password.',
       };
     }
-
     const token = this.buildMockToken(user);
     this.tokens.setTokens(token, 'mock-refresh');
     this.currentUser.set(user);
@@ -188,30 +158,10 @@ export class AuthService {
     return { ok: true };
   }
 
-  private mockRegister(req: RegisterRequest): ServiceResult {
-    const users = this.getMockUsers();
-    if (users.some(u => u.email.toLowerCase() === req.email.toLowerCase())) {
-      return { ok: false, error: 'An account with this email already exists.' };
-    }
-    const profile: UserProfile = {
-      id:           'u-' + Date.now(),
-      fullName:     req.fullName,
-      email:        req.email,
-      role:         req.role,
-      organisation: req.organisation,
-      createdAt:    new Date().toISOString(),
-    };
-    users.push({ ...profile, _pwd: req.password } as any);
-    try { localStorage.setItem(this.MOCK_USERS_KEY, JSON.stringify(users)); } catch {}
-
-    const token = this.buildMockToken(profile);
-    this.tokens.setTokens(token, 'mock-refresh');
-    this.currentUser.set(profile);
-    this.saveProfile(profile);
-    return { ok: true };
-  }
-
-  // Built-in demo accounts — any password 6+ chars works
+  /**
+   * Demo accounts — match the 4 SRS roles.
+   * Any password of 6+ characters is accepted (no real auth in dev mode).
+   */
   private getDemoUser(email: string, password: string): UserProfile | null {
     if (password.length < 6) return null;
     const map: Record<string, Omit<UserProfile, 'email'>> = {
@@ -224,16 +174,9 @@ export class AuthService {
     return base ? { ...base, email } : null;
   }
 
-  private getMockUsers(): (UserProfile & { _pwd: string })[] {
-    try {
-      const raw = localStorage.getItem(this.MOCK_USERS_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
-  }
-
-  /** Structurally valid (unsigned) JWT for dev — guards and interceptor read it fine */
+  /** Structurally valid unsigned JWT for dev — guards and interceptor read it fine */
   private buildMockToken(user: UserProfile): string {
-    const now    = Math.floor(Date.now() / 1000);
+    const now     = Math.floor(Date.now() / 1000);
     const header  = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
     const payload = btoa(JSON.stringify({
       sub: user.id, email: user.email, role: user.role,

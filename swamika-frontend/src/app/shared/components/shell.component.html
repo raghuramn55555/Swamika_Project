@@ -6,33 +6,46 @@
     <div class="brand-mark">SK</div>
     <div class="brand-text"><h1>Swamika</h1><span>CV Search Engine</span></div>
   </div>
-  <nav>
+    <nav>
     <div class="nav-group">
+      @if (canSee('dashboard')) {
       <button class="nav-item" [class.active]="activeView()==='dashboard'" (click)="goto('dashboard')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
         Dashboard
       </button>
+      }
+      @if (canSee('library')) {
       <button class="nav-item" [class.active]="activeView()==='library'" (click)="goto('library')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/></svg>
         CV Library
       </button>
+      }
+      @if (canSee('search')) {
       <button class="nav-item" [class.active]="activeView()==='search'" (click)="goto('search')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         Search
       </button>
+      }
+      @if (canSee('results')) {
       <button class="nav-item" [class.active]="activeView()==='results'" (click)="goto('results')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6M10 19V10M16 19V4M22 19H2"/></svg>
         Results
       </button>
+      }
+      @if (canSee('team')) {
       <button class="nav-item" [class.active]="activeView()==='team'" (click)="goto('team')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-5 7-5s7 1.7 7 5"/><circle cx="18" cy="8" r="2.4"/><path d="M16.5 15.2c2.7.4 4.5 1.7 4.5 4.3"/></svg>
         Team Composer
       </button>
+      }
+      @if (canSee('shortlists')) {
       <button class="nav-item" [class.active]="activeView()==='shortlists'" (click)="goto('shortlists')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14v18l-7-4-7 4V3z"/></svg>
         Shortlists
       </button>
+      }
     </div>
+    @if (canSee('admin')) {
     <div class="nav-group">
       <div class="nav-label">System</div>
       <button class="nav-item" [class.active]="activeView()==='admin'" (click)="goto('admin')">
@@ -40,6 +53,7 @@
         Administration
       </button>
     </div>
+    }
   </nav>
   <div class="sidebar-foot">
     <div class="role-pill">
@@ -69,26 +83,15 @@
           <div class="knob"></div>
         </div>
       </div>
-      <!-- Theme toggle — animated pill switch with sun/moon -->
-      <button class="theme-toggle" (click)="theme.toggle()"
-              [class.dark]="theme.isDark()"
+      <!-- Theme toggle: moon in light mode, sun in dark mode -->
+      <button class="icon-btn" (click)="theme.toggle()"
               [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
               [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
-        <!-- Sun icon -->
-        <span class="theme-icon sun">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        </span>
-        <!-- Moon icon -->
-        <span class="theme-icon moon">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
-          </svg>
-        </span>
-        <!-- Sliding knob -->
-        <span class="theme-knob"></span>
+        @if (theme.isDark()) {
+          <i class="fa-solid fa-sun" style="color:#f59e0b;font-size:15px"></i>
+        } @else {
+          <i class="fa-solid fa-moon" style="color:#6366f1;font-size:15px"></i>
+        }
       </button>
       <!-- Logout -->
       <button class="icon-btn" (click)="auth.logout()" title="Sign out" aria-label="Sign out">
@@ -149,6 +152,9 @@
     <!-- ========== CV LIBRARY ========== -->
     @if (activeView() === 'library') {
     <section class="view-enter">
+
+      <!-- Upload panel — Recruiter & Admin only -->
+      @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
       <div class="grid cols-3">
         <div class="card">
           <h3 style="margin-bottom:12px">Upload CVs</h3>
@@ -175,7 +181,7 @@
             </div>
             <div class="progress-row">
               <div class="file-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-              <div class="info"><div class="name">CV_corrupted.docx <span class="badge failed" style="margin-left:6px">Failed</span></div><div class="meta">Unreadable file — <a href="#" style="color:var(--brand);font-weight:600" (click)="$event.preventDefault()">retry</a> or replace</div><div class="bar"><div style="width:100%;background:var(--red)"></div></div></div>
+              <div class="info"><div class="name">CV_corrupted.docx <span class="badge failed" style="margin-left:6px">Failed</span></div><div class="meta">Unreadable file — retry or replace</div><div class="bar"><div style="width:100%;background:var(--red)"></div></div></div>
             </div>
           </div>
         </div>
@@ -190,16 +196,67 @@
           <p style="font-size:11.5px;color:var(--text-faint);margin-top:12px">No CV text is written to logs or notifications — only file identifiers and outcomes.</p>
         </div>
       </div>
+      } <!-- end upload panel -->
 
       <div class="section-title"><h3>Library</h3></div>
       <div class="card" style="padding:0">
-        <table><thead><tr><th>Candidate ref</th><th>Title</th><th>Status</th><th>Uploaded</th><th>Evidence quality</th><th></th></tr></thead>
-        <tbody>
-          <tr><td class="mono">CV-1042</td><td>Senior Java Engineer</td><td><span class="badge ready">Ready</span></td><td>Today</td><td>High</td><td><span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span></td></tr>
-          <tr><td class="mono">CV-1043</td><td>Frontend Developer</td><td><span class="badge ready">Ready</span></td><td>Today</td><td>High</td><td><span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span></td></tr>
-          <tr><td class="mono">CV-1044</td><td>Data Engineer</td><td><span class="badge warn">Warning</span></td><td>Yesterday</td><td>Medium</td><td><span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span></td></tr>
-          <tr><td class="mono">CV-1039</td><td>QA Engineer</td><td><span class="badge failed">Failed</span></td><td>2 days ago</td><td>—</td><td><button class="btn ghost small" (click)="goto('library')">Retry</button></td></tr>
-        </tbody></table>
+        <table>
+          <thead>
+            <tr>
+              <th>Candidate ref</th><th>Title</th><th>Status</th>
+              <th>Uploaded</th><th>Evidence quality</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row actions differ by role -->
+            <tr>
+              <td class="mono">CV-1042</td><td>Senior Java Engineer</td>
+              <td><span class="badge ready">Ready</span></td>
+              <td>Today</td><td>High</td>
+              <td style="display:flex;gap:6px;align-items:center">
+                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
+                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                  <button class="btn ghost small">Reprocess</button>
+                  <button class="btn danger small">Delete</button>
+                }
+              </td>
+            </tr>
+            <tr>
+              <td class="mono">CV-1043</td><td>Frontend Developer</td>
+              <td><span class="badge ready">Ready</span></td>
+              <td>Today</td><td>High</td>
+              <td style="display:flex;gap:6px;align-items:center">
+                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
+                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                  <button class="btn ghost small">Reprocess</button>
+                  <button class="btn danger small">Delete</button>
+                }
+              </td>
+            </tr>
+            <tr>
+              <td class="mono">CV-1044</td><td>Data Engineer</td>
+              <td><span class="badge warn">Warning</span></td>
+              <td>Yesterday</td><td>Medium</td>
+              <td style="display:flex;gap:6px;align-items:center">
+                <span class="link" style="font-size:12px" (click)="goto('results')">View profile →</span>
+                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                  <button class="btn ghost small">Reprocess</button>
+                  <button class="btn danger small">Delete</button>
+                }
+              </td>
+            </tr>
+            <tr>
+              <td class="mono">CV-1039</td><td>QA Engineer</td>
+              <td><span class="badge failed">Failed</span></td>
+              <td>2 days ago</td><td>—</td>
+              <td>
+                @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+                  <button class="btn ghost small">Retry</button>
+                }
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
     }
@@ -295,6 +352,9 @@
       @if (blindMode()) {
         <div class="banner blind">Blind mode ON — names, photos and contact details are hidden. Reveal requires an authorized, audited action.</div>
       }
+      @if (auth.hasRole('REVIEWER')) {
+        <div class="banner warn">You are viewing shared results as a Reviewer. Evidence and feedback actions are available — upload, delete and configuration are not.</div>
+      }
       <div class="results-toolbar">
         <div class="filters-row">
           <span class="filter-pill" [class.active]="activeFilter()==='all'"    (click)="setFilter('all')">All (34)</span>
@@ -336,7 +396,13 @@
         <div class="result-actions">
           <button class="btn ghost small" (click)="openDrawer()">Explain</button>
           <button class="btn ghost small">Compare</button>
-          <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          }
+          @if (auth.hasRole('REVIEWER')) {
+            <button class="btn ghost small">Relevant</button>
+            <button class="btn ghost small">Not relevant</button>
+          }
         </div>
       </div>
 
@@ -368,7 +434,13 @@
         <div class="result-actions">
           <button class="btn ghost small" (click)="openDrawer()">Explain</button>
           <button class="btn ghost small">Compare</button>
-          <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          }
+          @if (auth.hasRole('REVIEWER')) {
+            <button class="btn ghost small">Relevant</button>
+            <button class="btn ghost small">Not relevant</button>
+          }
         </div>
       </div>
 
@@ -400,7 +472,13 @@
         <div class="result-actions">
           <button class="btn ghost small" (click)="openDrawer()">Explain</button>
           <button class="btn ghost small">Compare</button>
-          <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          @if (auth.hasRole('RECRUITER','ADMINISTRATOR')) {
+            <button class="btn small" (click)="goto('shortlists')">Shortlist</button>
+          }
+          @if (auth.hasRole('REVIEWER')) {
+            <button class="btn ghost small">Relevant</button>
+            <button class="btn ghost small">Not relevant</button>
+          }
         </div>
       </div>
     </section>
@@ -483,15 +561,25 @@
     <!-- ========== ADMIN ========== -->
     @if (activeView() === 'admin') {
     <section class="view-enter">
-      <div class="banner warn">
-        <span class="admin-lock">Admin only</span>&nbsp; Visible here because the demo role is set to Recruiter — production build restricts this screen by role.
-      </div>
-      <div class="grid cols-4">
-        <div class="card"><h3>Skill aliases</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">"JS" → JavaScript, "PG" → PostgreSQL, 42 mappings active.</p></div>
-        <div class="card"><h3>Model versions</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">Embedding v2.3 · Extraction v1.8 · Ranking v1.4</p></div>
-        <div class="card"><h3>Retention policy</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">CVs retained 180 days unless placed in an active shortlist.</p></div>
-        <div class="card"><h3>Audit trail</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">1,204 events logged this month · 0 blind-mode leaks detected.</p></div>
-      </div>
+      @if (auth.hasRole('AUDITOR')) {
+        <div class="banner warn">You are viewing as Auditor — read-only access to audit trail and search configurations.</div>
+      }
+      @if (auth.hasRole('ADMINISTRATOR')) {
+        <div class="grid cols-4">
+          <div class="card"><h3>Skill aliases</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">"JS" → JavaScript, "PG" → PostgreSQL, 42 mappings active.</p></div>
+          <div class="card"><h3>Model versions</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">Embedding v2.3 · Extraction v1.8 · Ranking v1.4</p></div>
+          <div class="card"><h3>Retention policy</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">CVs retained 180 days unless placed in an active shortlist.</p></div>
+          <div class="card"><h3>Audit trail</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">1,204 events logged this month · 0 blind-mode leaks detected.</p></div>
+        </div>
+      }
+      @if (auth.hasRole('AUDITOR')) {
+        <div class="grid cols-4">
+          <div class="card"><h3>Audit trail</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">1,204 events logged this month · 0 blind-mode leaks detected.</p></div>
+          <div class="card"><h3>Search configurations</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">34 saved searches · model versions recorded per snapshot.</p></div>
+          <div class="card"><h3>Deletion evidence</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">3 candidates deleted this month · all outcomes audited.</p></div>
+          <div class="card"><h3>Model versions</h3><p style="font-size:12px;color:var(--text-muted);margin-top:8px">Embedding v2.3 · Extraction v1.8 · Ranking v1.4 (read-only).</p></div>
+        </div>
+      }
     </section>
     }
 

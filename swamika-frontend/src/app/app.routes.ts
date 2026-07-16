@@ -9,22 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/login.component').then(m => m.LoginComponent),
   },
   {
-    path: 'register',
-    canActivate: [noAuthGuard],
-    loadComponent: () => import('./auth/register.component').then(m => m.RegisterComponent),
-  },
-  {
     path: 'dashboard',
     canActivate: [authGuard],
     loadComponent: () => import('./shared/components/shell.component').then(m => m.ShellComponent),
   },
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-  },
+  { path: '',   redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' },
 ];

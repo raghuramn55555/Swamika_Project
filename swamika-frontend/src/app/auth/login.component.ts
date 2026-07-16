@@ -18,7 +18,7 @@ import { ThemeService } from '../core/services/theme.service';
         <div class="brand-logo">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         </div>
-        <h1 class="brand-name">Swamika</h1>
+        <h1 class="brand-name">Swamika BV</h1>
         <p class="brand-sub">AI-Driven CV Search Engine</p>
 
         <div class="wf-label">Recruitment Workflow</div>
@@ -42,16 +42,15 @@ import { ThemeService } from '../core/services/theme.service';
     <!-- ── Right form panel ─────────────────────────────────────────────── -->
     <main class="form-panel">
 
-      <!-- Theme toggle top-right -->
-      <button class="theme-pill" (click)="theme.toggle()" [class.dark]="theme.isDark()"
-              [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
-        <span class="tp-icon sun">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </span>
-        <span class="tp-icon moon">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-        </span>
-        <span class="tp-knob"></span>
+      <!-- Theme toggle: shows moon in light mode, sun in dark mode -->
+      <button class="theme-toggle-btn" (click)="theme.toggle()"
+              [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+              [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+        @if (theme.isDark()) {
+          <i class="fa-solid fa-sun"></i>
+        } @else {
+          <i class="fa-solid fa-moon"></i>
+        }
       </button>
 
       <div class="form-box">
@@ -182,33 +181,31 @@ import { ThemeService } from '../core/services/theme.service';
     }
     @media (max-width: 860px) { .form-panel { flex: 1; } }
 
-    /* Theme pill — top right */
-    .theme-pill {
+    /* Theme toggle button — top right */
+    .theme-toggle-btn {
       position: absolute; top: 20px; right: 24px;
-      width: 56px; height: 28px; border-radius: 20px;
-      border: 1px solid var(--border); background: var(--surface-2);
-      cursor: pointer; padding: 0; overflow: hidden;
-      transition: background 0.3s, border-color 0.3s;
-      display: flex; align-items: center;
-      &.dark { background: #1e293b; border-color: #334155; }
-    }
-
-    .tp-icon {
-      position: absolute;
+      width: 38px; height: 38px; border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      width: 18px; height: 18px; transition: opacity 0.25s, transform 0.25s;
-    }
-    .tp-icon.sun  { left: 4px;  color: #f59e0b; opacity: 1;  transform: scale(1); }
-    .tp-icon.moon { right: 4px; color: #94a3b8; opacity: 0;  transform: scale(0.5); }
-    .dark .tp-icon.sun  { opacity: 0;  transform: scale(0.5); }
-    .dark .tp-icon.moon { opacity: 1;  transform: scale(1); color: #e2e8f0; }
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      color: var(--text-muted);
 
-    .tp-knob {
-      position: absolute; top: 3px; left: 3px;
-      width: 20px; height: 20px; border-radius: 50%;
-      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
-      .dark & { transform: translateX(28px); background: #475569; }
+      i { font-size: 16px; transition: color 0.2s; }
+
+      /* Sun icon — shown in dark mode, amber colour */
+      .fa-sun  { color: #f59e0b; }
+
+      /* Moon icon — shown in light mode, indigo colour */
+      .fa-moon { color: #6366f1; }
+
+      &:hover {
+        background: var(--surface-2);
+        border-color: var(--brand);
+        transform: scale(1.08);
+      }
+      &:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
     }
 
     .form-box {
