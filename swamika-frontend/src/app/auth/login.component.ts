@@ -1,4 +1,4 @@
-import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,538 +10,524 @@ import { ThemeService } from '../core/services/theme.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="login-wrap">
-      <!-- ── Left brand panel ─────────────────────────────────────────────── -->
-      <aside class="brand-panel">
-        <div class="brand-inner">
-          <div class="brand-logo">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4.3-4.3" />
+  <div class="login-root">
+
+    <!-- ── Left visual panel ─────────────────────────────────────────────── -->
+    <aside class="visual-panel">
+      <!-- Animated background blobs -->
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+
+      <div class="visual-content">
+        <!-- Logo -->
+        <div class="logo-row">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
             </svg>
           </div>
-          <h1 class="brand-name">Swamika BV</h1>
-          <p class="brand-sub">AI-Driven CV Search Engine</p>
-
-          <div class="wf-label">Recruitment Workflow</div>
-          <ul class="workflow">
-            @for (s of steps; track s.label) {
-              <li>
-                <div class="wf-icon">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.2"
-                    [innerHTML]="s.path"
-                  ></svg>
-                </div>
-                <div>
-                  <span class="wf-title">{{ s.label }}</span>
-                  <span class="wf-desc">{{ s.desc }}</span>
-                </div>
-              </li>
-            }
-          </ul>
+          <span class="logo-name">Swamika</span>
         </div>
-        <div class="brand-foot">
-          © Swamika BV &nbsp;·&nbsp; Version 1.0 &nbsp;·&nbsp; AI Recruitment Platform
-        </div>
-      </aside>
 
-      <!-- ── Right form panel ─────────────────────────────────────────────── -->
-      <main class="form-panel">
-        <!-- Theme toggle: shows moon in light mode, sun in dark mode -->
-        <button
-          class="theme-toggle-btn"
-          (click)="theme.toggle()"
-          [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-          [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-        >
-          @if (theme.isDark()) {
-            <i class="fa-solid fa-sun"></i>
-          } @else {
-            <i class="fa-solid fa-moon"></i>
-          }
-        </button>
-
-        <div class="form-box">
-          <h2>Sign in</h2>
-          <p class="form-sub">Enter your credentials to access your workspace.</p>
-
-          <form [formGroup]="form" (ngSubmit)="submit()" novalidate autocomplete="on">
-            <!-- Email -->
-            <div class="field-wrap">
-              <label class="field-label" for="email">Email address</label>
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                class="field-input"
-                [class.err]="f('email').touched && f('email').invalid"
-                placeholder="you@swamika.be"
-                autocomplete="email"
-              />
-              @if (f('email').touched && f('email').hasError('required')) {
-                <span class="field-err">Email is required</span>
-              } @else if (f('email').touched && f('email').hasError('email')) {
-                <span class="field-err">Enter a valid email address</span>
-              }
-            </div>
-
-            <!-- Password -->
-            <div class="field-wrap">
-              <label class="field-label" for="password">Password</label>
-              <div class="input-wrap">
-                <input
-                  id="password"
-                  [type]="showPwd() ? 'text' : 'password'"
-                  formControlName="password"
-                  class="field-input"
-                  [class.err]="f('password').touched && f('password').invalid"
-                  autocomplete="current-password"
-                />
-                <button
-                  type="button"
-                  class="vis-btn"
-                  (click)="showPwd.update((v) => !v)"
-                  [attr.aria-label]="showPwd() ? 'Hide password' : 'Show password'"
-                >
-                  @if (showPwd()) {
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-                      />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
-                  } @else {
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  }
-                </button>
-              </div>
-              @if (f('password').touched && f('password').hasError('required')) {
-                <span class="field-err">Password is required</span>
-              }
-            </div>
-
-            <!-- Remember me -->
-            <label class="check-row">
-              <input type="checkbox" formControlName="remember" />
-              Remember me
-            </label>
-
-            <!-- Error banner -->
-            @if (errorMsg()) {
-              <div class="err-banner" role="alert">{{ errorMsg() }}</div>
-            }
-
-            <!-- Submit -->
-            <button
-              type="submit"
-              class="submit-btn"
-              [class.loading]="loading()"
-              [disabled]="loading()"
-            >
-              @if (loading()) {
-                <span class="spinner"></span> Signing in…
-              } @else {
-                Sign in
-              }
-            </button>
-          </form>
-
-          <div class="form-foot">
-            © Swamika BV &nbsp;·&nbsp; Version 1.0 &nbsp;·&nbsp; AI Recruitment Platform
+        <!-- Hero image (AI-CV graphic) -->
+        <div class="hero-img-wrap">
+          <img src="ai-cv-hero.png" alt="AI-powered CV analysis" class="hero-img"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+          <!-- Fallback when image not yet added -->
+          <div class="hero-fallback" style="display:none">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+              <path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+              <circle cx="9" cy="9" r="2"/><path d="M16 13l-3-3-4 4-2-2-3 3"/>
+            </svg>
+            <p>Add ai-cv-hero.png to /public</p>
           </div>
         </div>
-      </main>
-    </div>
+
+        <!-- Headline -->
+        <div class="visual-text">
+          <h1>AI-Driven CV Search</h1>
+          <p>Transform unstructured CVs into searchable candidate profiles with evidence-backed ranking.</p>
+        </div>
+
+        <!-- Feature pills -->
+        <div class="feature-pills">
+          <span class="pill"><i class="fa-solid fa-eye-slash"></i> Blind ranking</span>
+          <span class="pill"><i class="fa-solid fa-magnifying-glass"></i> Hybrid search</span>
+          <span class="pill"><i class="fa-solid fa-users"></i> Team composer</span>
+          <span class="pill"><i class="fa-solid fa-shield-halved"></i> Audit trail</span>
+        </div>
+      </div>
+
+      <div class="visual-footer">© Swamika BV · Version 1.0 · AI Recruitment Platform</div>
+    </aside>
+
+    <!-- ── Right form panel ──────────────────────────────────────────────── -->
+    <main class="form-panel">
+
+      <!-- Theme toggle -->
+      <button class="theme-btn" (click)="theme.toggle()"
+              [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+        @if (theme.isDark()) {
+          <i class="fa-solid fa-sun"></i>
+        } @else {
+          <i class="fa-solid fa-moon"></i>
+        }
+      </button>
+
+      <!-- Glassmorphism card -->
+      <div class="glass-card">
+
+        <div class="card-header">
+          <div class="card-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </div>
+          <h2>Welcome back</h2>
+          <p>Sign in to your recruitment workspace</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate autocomplete="on">
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email">Email address</label>
+            <div class="input-row" [class.input-err]="f('email').touched && f('email').invalid">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input id="email" type="email" formControlName="email"
+                     placeholder="you@swamika.be" autocomplete="email" />
+            </div>
+            @if (f('email').touched && f('email').hasError('required')) {
+              <span class="err-text">Email is required</span>
+            } @else if (f('email').touched && f('email').hasError('email')) {
+              <span class="err-text">Enter a valid email address</span>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-row" [class.input-err]="f('password').touched && f('password').invalid">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input id="password" [type]="showPwd() ? 'text' : 'password'"
+                     formControlName="password" autocomplete="current-password" />
+              <button type="button" class="eye-btn"
+                      (click)="showPwd.update(v => !v)"
+                      [attr.aria-label]="showPwd() ? 'Hide password' : 'Show password'">
+                @if (showPwd()) {
+                  <i class="fa-regular fa-eye-slash"></i>
+                } @else {
+                  <i class="fa-regular fa-eye"></i>
+                }
+              </button>
+            </div>
+            @if (f('password').touched && f('password').hasError('required')) {
+              <span class="err-text">Password is required</span>
+            }
+          </div>
+
+          <!-- Remember me -->
+          <label class="remember-row">
+            <input type="checkbox" formControlName="remember" />
+            <span>Remember me</span>
+          </label>
+
+          <!-- Error banner -->
+          @if (errorMsg()) {
+            <div class="error-banner" role="alert">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              {{ errorMsg() }}
+            </div>
+          }
+
+          <!-- Submit button -->
+          <button type="submit" class="submit-btn" [disabled]="loading()">
+            @if (loading()) {
+              <span class="spin"></span>
+              <span>Signing in…</span>
+            } @else {
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              <span>Sign in</span>
+            }
+          </button>
+
+        </form>
+
+        <div class="card-footer">© Swamika BV · Version 1.0</div>
+      </div>
+    </main>
+  </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [
-    `
-      /* ── Root layout ─────────────────────────────────────────────────────── */
-      .login-wrap {
-        display: flex;
-        min-height: 100vh;
-        background: var(--bg);
-        color: var(--text);
-      }
+  styles: [`
+    /* ── Root ───────────────────────────────────────────────────────────── */
+    .login-root {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
 
-      /* ── Brand panel ─────────────────────────────────────────────────────── */
-      .brand-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 44px 44px 32px;
-        background: linear-gradient(160deg, #283593 0%, #1a237e 50%, #00695c 100%);
-        position: relative;
-        overflow: hidden;
-      }
-      @media (max-width: 860px) {
-        .brand-panel {
-          display: none;
-        }
-      }
-      .brand-inner {
-        position: relative;
-        z-index: 2;
-        max-width: 380px;
-        color: #fff;
-      }
-      .brand-logo {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(6px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 18px;
-        color: #fff;
-      }
-      .brand-name {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 4px;
-      }
-      .brand-sub {
-        font-size: 0.875rem;
-        color: rgba(255, 255, 255, 0.65);
-        margin-bottom: 32px;
-      }
-      .wf-label {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: rgba(255, 255, 255, 0.45);
-        margin-bottom: 16px;
-      }
-      .workflow {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      .workflow li {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .workflow li:last-child {
-        border-bottom: none;
-      }
-      .wf-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 9px;
-        flex-shrink: 0;
-        background: rgba(255, 255, 255, 0.12);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #80cbc4;
-      }
-      .wf-title {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #fff;
-      }
-      .wf-desc {
-        display: block;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.55);
-        margin-top: 2px;
-      }
-      .brand-foot {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.35);
-        position: relative;
-        z-index: 2;
-      }
+    /* ── Left visual panel ───────────────────────────────────────────────── */
+    .visual-panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 44px 28px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0d4f47 100%);
+    }
 
-      /* ── Form panel ──────────────────────────────────────────────────────── */
-      .form-panel {
-        flex: 0 0 480px;
-        display: flex;
-        flex-direction: column;
-        background: var(--bg);
-        position: relative;
-      }
-      @media (max-width: 860px) {
-        .form-panel {
-          flex: 1;
-        }
-      }
+    @media (max-width: 900px) { .visual-panel { display: none; } }
 
-      /* Theme toggle — top right of form panel */
-      .theme-toggle-btn {
-        position: absolute;
-        top: 20px;
-        right: 24px;
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        border: 1.5px solid var(--border);
-        background: var(--surface);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition:
-          background 0.2s,
-          border-color 0.2s,
-          transform 0.15s;
-      }
-      .theme-toggle-btn .fa-sun {
-        font-size: 16px;
-        color: #f59e0b;
-      }
-      .theme-toggle-btn .fa-moon {
-        font-size: 16px;
-        color: #6366f1;
-      }
-      .theme-toggle-btn:hover {
-        background: var(--surface-2);
-        border-color: var(--brand);
-        transform: scale(1.08);
-      }
-      .theme-toggle-btn:focus-visible {
-        outline: 2px solid var(--focus);
-        outline-offset: 2px;
-      }
+    /* Animated blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.25;
+      animation: drift 8s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 340px; height: 340px; background: #3b82f6; top: -80px; right: -60px; animation-delay: 0s; }
+    .blob-2 { width: 260px; height: 260px; background: #06b6d4; bottom: 60px; left: -40px; animation-delay: 2s; }
+    .blob-3 { width: 200px; height: 200px; background: #10b981; top: 45%; right: 15%; animation-delay: 4s; }
 
-      .form-box {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 40px 44px;
-        max-width: 420px;
-        width: 100%;
-        margin: 0 auto;
-      }
-      h2 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 6px;
-      }
-      .form-sub {
-        font-size: 13px;
-        color: var(--text-muted);
-        margin-bottom: 28px;
-      }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(20px, 30px) scale(1.1); }
+    }
 
-      /* Fields — use global tokens, no hardcoded colors */
-      .field-wrap {
-        margin-bottom: 16px;
-      }
-      .field-label {
-        display: block;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-muted);
-        margin-bottom: 6px;
-      }
-      .field-input {
-        width: 100%;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px 12px;
-        font-size: 13px;
-        background: var(--surface);
-        color: var(--text);
-        font-family: inherit;
-        transition: border-color 0.15s;
-      }
-      .field-input:focus {
-        outline: none;
-        border-color: var(--brand);
-      }
-      .field-input.err {
-        border-color: var(--red);
-      }
-      .input-wrap {
-        position: relative;
-      }
-      .input-wrap .field-input {
-        padding-right: 40px;
-      }
-      .vis-btn {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-      }
-      .vis-btn:hover {
-        color: var(--text);
-      }
-      .field-err {
-        font-size: 11.5px;
-        color: var(--red);
-        margin-top: 4px;
-        display: block;
-      }
+    .visual-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
 
-      .check-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12.5px;
-        color: var(--text-muted);
-        cursor: pointer;
-        margin-bottom: 20px;
-        input {
-          accent-color: var(--brand);
-          width: 14px;
-          height: 14px;
-          cursor: pointer;
-        }
-      }
-      .err-banner {
-        background: var(--red-soft);
-        border: 1px solid var(--red);
-        color: var(--red);
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 12.5px;
-        margin-bottom: 16px;
-      }
+    /* Logo row */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .logo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
 
-      /* Submit — extends global .btn */
-      .submit-btn {
-        width: 100%;
-        padding: 11px;
-        border: none;
-        border-radius: 8px;
-        background: var(--brand);
-        color: #fff;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: background 0.15s;
-      }
-      .submit-btn:hover:not(:disabled) {
-        background: var(--brand-strong);
-      }
-      .submit-btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-      .spinner {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        animation: spin 0.7s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      .form-foot {
-        font-size: 11px;
-        color: var(--text-faint);
-        text-align: center;
-        margin-top: 36px;
-      }
-    `,
-  ],
+    /* Hero image */
+    .hero-img-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(4px);
+      max-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-fallback {
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 48px;
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+    }
+
+    /* Headline */
+    .visual-text h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .visual-text p {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      max-width: 340px;
+    }
+
+    /* Feature pills */
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      backdrop-filter: blur(4px);
+    }
+    .pill i { font-size: 11px; }
+
+    .visual-footer {
+      position: relative;
+      z-index: 2;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── Right form panel ────────────────────────────────────────────────── */
+    .form-panel {
+      flex: 0 0 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      position: relative;
+      padding: 32px 24px;
+    }
+    @media (max-width: 900px) { .form-panel { flex: 1; } }
+
+    /* Theme button */
+    .theme-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .theme-btn:hover { background: var(--surface-2); transform: scale(1.08); }
+    .theme-btn .fa-sun  { font-size: 15px; color: #f59e0b; }
+    .theme-btn .fa-moon { font-size: 15px; color: #6366f1; }
+
+    /* ── Glass card ──────────────────────────────────────────────────────── */
+    .glass-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px 28px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 4px 6px -1px rgba(0,0,0,0.07),
+        0 20px 40px -8px rgba(0,0,0,0.12);
+    }
+
+    /* Card header */
+    .card-header { margin-bottom: 28px; text-align: center; }
+    .card-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      margin: 0 auto 16px;
+    }
+    .card-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .card-header p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Fields ──────────────────────────────────────────────────────────── */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      overflow: hidden;
+    }
+    .input-row:focus-within {
+      border-color: #1e3a5f;
+      box-shadow: 0 0 0 3px rgba(30,58,95,0.12);
+      background: var(--surface);
+    }
+    .input-row.input-err { border-color: var(--red); }
+    .input-row.input-err:focus-within { box-shadow: 0 0 0 3px rgba(178,58,49,0.12); }
+
+    .input-icon {
+      padding: 0 12px;
+      color: var(--text-faint);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .input-row input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 11px 12px 11px 0;
+      font-size: 13.5px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      width: 100%;
+    }
+    .input-row input::placeholder { color: var(--text-faint); }
+
+    .eye-btn {
+      background: none;
+      border: none;
+      padding: 0 12px;
+      cursor: pointer;
+      color: var(--text-faint);
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      height: 100%;
+    }
+    .eye-btn:hover { color: var(--text); }
+
+    .err-text { font-size: 11.5px; color: var(--red); margin-top: 5px; display: block; }
+
+    /* Remember me */
+    .remember-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-bottom: 22px;
+      user-select: none;
+    }
+    .remember-row input { accent-color: #1e3a5f; width: 15px; height: 15px; cursor: pointer; }
+
+    /* Error banner */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red-soft);
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .error-banner i { flex-shrink: 0; }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0d4f47 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .submit-btn:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Spinner */
+    .spin {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Card footer */
+    .card-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+  `],
 })
 export class LoginComponent {
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
+  private fb     = inject(FormBuilder);
+  private auth   = inject(AuthService);
   private router = inject(Router);
-  public theme = inject(ThemeService);
+  public  theme  = inject(ThemeService);
 
-  loading = signal(false);
+  loading  = signal(false);
   errorMsg = signal('');
-  showPwd = signal(false);
+  showPwd  = signal(false);
 
   form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email:    ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
     remember: [false],
   });
 
-  steps = [
-    {
-      label: 'Upload CVs',
-      desc: 'PDF or DOCX — bulk or single file',
-      path: '<path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/>',
-    },
-    {
-      label: 'AI Processing',
-      desc: 'Extract skills, experience and evidence',
-      path: '<circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2"/>',
-    },
-    {
-      label: 'Search Candidates',
-      desc: 'Natural language or vacancy-driven search',
-      path: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
-    },
-    {
-      label: 'Compare Profiles',
-      desc: 'Side-by-side blind or revealed review',
-      path: '<rect x="2" y="3" width="8" height="18" rx="1.5"/><rect x="14" y="3" width="8" height="18" rx="1.5"/>',
-    },
-    {
-      label: 'Create Shortlists',
-      desc: 'Save, annotate and export candidates',
-      path: '<path d="M5 3h14v18l-7-4-7 4V3z"/>',
-    },
-  ];
-
-  f(name: string) {
-    return this.form.get(name)!;
-  }
+  f(name: string) { return this.form.get(name)!; }
 
   async submit(): Promise<void> {
     this.form.markAllAsTouched();
