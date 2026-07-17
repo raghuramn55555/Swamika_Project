@@ -1,0 +1,148 @@
+<div class="login-root">
+
+    <!-- ── Left visual panel ─────────────────────────────────────────────── -->
+    <aside class="visual-panel">
+      <!-- Animated background blobs -->
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+
+      <div class="visual-content">
+        <!-- Logo -->
+        <div class="logo-row">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </div>
+          <span class="logo-name">Swamika</span>
+        </div>
+
+        <!-- Hero image (AI-CV graphic) -->
+        <div class="hero-img-wrap">
+          <img src="image.png" alt="AI-powered CV analysis" class="hero-img"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+          <!-- Fallback when image not yet added -->
+          <div class="hero-fallback" style="display:none">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+              <path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+              <circle cx="9" cy="9" r="2"/><path d="M16 13l-3-3-4 4-2-2-3 3"/>
+            </svg>
+            <p>Add ai-cv-hero.png to /public</p>
+          </div>
+        </div>
+
+        <!-- Headline -->
+        <div class="visual-text">
+          <h1>AI-Driven CV Search</h1>
+          <p>Transform unstructured CVs into searchable candidate profiles with evidence-backed ranking.</p>
+        </div>
+
+        <!-- Feature pills -->
+        <div class="feature-pills">
+          <span class="pill"><i class="fa-solid fa-eye-slash"></i> Blind ranking</span>
+          <span class="pill"><i class="fa-solid fa-magnifying-glass"></i> Hybrid search</span>
+          <span class="pill"><i class="fa-solid fa-users"></i> Team composer</span>
+          <span class="pill"><i class="fa-solid fa-shield-halved"></i> Audit trail</span>
+        </div>
+      </div>
+
+      <div class="visual-footer">© Swamika BV · Version 1.0 · AI Recruitment Platform</div>
+    </aside>
+
+    <!-- ── Right form panel ──────────────────────────────────────────────── -->
+    <main class="form-panel">
+
+      <!-- Theme toggle -->
+      <button class="theme-btn" (click)="theme.toggle()"
+              [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+        @if (theme.isDark()) {
+          <i class="fa-solid fa-sun"></i>
+        } @else {
+          <i class="fa-solid fa-moon"></i>
+        }
+      </button>
+
+      <!-- Glassmorphism card -->
+      <div class="glass-card">
+
+        <div class="card-header">
+          <div class="card-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </div>
+          <h2>Welcome back</h2>
+          <p>Sign in to your recruitment workspace</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate autocomplete="on">
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email">Email address</label>
+            <div class="input-row" [class.input-err]="f('email').touched && f('email').invalid">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input id="email" type="email" formControlName="email"
+                     placeholder="you@swamika.be" autocomplete="email" />
+            </div>
+            @if (f('email').touched && f('email').hasError('required')) {
+              <span class="err-text">Email is required</span>
+            } @else if (f('email').touched && f('email').hasError('email')) {
+              <span class="err-text">Enter a valid email address</span>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-row" [class.input-err]="f('password').touched && f('password').invalid">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input id="password" [type]="showPwd() ? 'text' : 'password'"
+                     formControlName="password" autocomplete="current-password" />
+              <button type="button" class="eye-btn"
+                      (click)="showPwd.update(v => !v)"
+                      [attr.aria-label]="showPwd() ? 'Hide password' : 'Show password'">
+                @if (showPwd()) {
+                  <i class="fa-regular fa-eye-slash"></i>
+                } @else {
+                  <i class="fa-regular fa-eye"></i>
+                }
+              </button>
+            </div>
+            @if (f('password').touched && f('password').hasError('required')) {
+              <span class="err-text">Password is required</span>
+            }
+          </div>
+
+          <!-- Remember me -->
+          <label class="remember-row">
+            <input type="checkbox" formControlName="remember" />
+            <span>Remember me</span>
+          </label>
+
+          <!-- Error banner -->
+          @if (errorMsg()) {
+            <div class="error-banner" role="alert">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              {{ errorMsg() }}
+            </div>
+          }
+
+          <!-- Submit button -->
+          <button type="submit" class="submit-btn" [disabled]="loading()">
+            @if (loading()) {
+              <span class="spin"></span>
+              <span>Signing in…</span>
+            } @else {
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              <span>Sign in</span>
+            }
+          </button>
+
+        </form>
+
+        <div class="card-footer">© Swamika BV · Version 1.0</div>
+      </div>
+    </main>
+  </div>
