@@ -1,13 +1,3 @@
-/* Angular Material theme — these @use/@include lines are required by Material
-   and have no plain CSS equivalent. Everything else below is plain CSS.      */
-@use '@angular/material' as mat;
-$p: mat.m2-define-palette(mat.$m2-teal-palette);
-$a: mat.m2-define-palette(mat.$m2-indigo-palette);
-$lt: mat.m2-define-light-theme((color:(primary:$p,accent:$a),density:0));
-$dk: mat.m2-define-dark-theme((color:(primary:$p,accent:$a),density:0));
-@include mat.all-component-themes($lt);
-html[data-theme="dark"] { @include mat.all-component-colors($dk); }
-
 /* ── Design tokens (light) ───────────────────────────────────────────────── */
 :root {
   --bg: #F5F7FA;

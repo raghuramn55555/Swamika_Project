@@ -42,7 +42,7 @@ const NAV_ROLES: Record<View, UserRole[]> = {
   standalone: true,
   imports: [CommonModule, FormsModule, ScoreMeterComponent],
   templateUrl: './shell.component.html',
-  styleUrls: ['./shell.component.scss'],
+  styleUrls: ['./shell.component.css'],
 })
 export class ShellComponent {
   auth    = inject(AuthService);

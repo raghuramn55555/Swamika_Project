@@ -1,0 +1,13 @@
+/* Angular Material theme configuration.
+   This is the ONLY .scss file in the project — required because Angular
+   Material's theming API only works with SCSS @use/@include.
+   All application styles are in styles.css (plain CSS).               */
+@use '@angular/material' as mat;
+
+$p:  mat.m2-define-palette(mat.$m2-teal-palette);
+$a:  mat.m2-define-palette(mat.$m2-indigo-palette);
+$lt: mat.m2-define-light-theme((color:(primary:$p,accent:$a),density:0));
+$dk: mat.m2-define-dark-theme((color:(primary:$p,accent:$a),density:0));
+
+@include mat.all-component-themes($lt);
+html[data-theme="dark"] { @include mat.all-component-colors($dk); }
