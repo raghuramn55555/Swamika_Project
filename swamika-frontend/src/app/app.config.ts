@@ -5,6 +5,7 @@ import {
   provideHttpClient,
   withInterceptors,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 
 import { routes } from './app.routes';
@@ -15,9 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync(),
-    provideHttpClient(
-      withInterceptors([authInterceptor]),
-      withInterceptorsFromDi(),
-    ),
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor]), withInterceptorsFromDi()),
   ],
 };
