@@ -176,7 +176,6 @@ import { ThemeService } from '../core/services/theme.service';
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       padding: 36px 44px 28px;
       background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0d4f47 100%);
     }
@@ -190,6 +189,7 @@ import { ThemeService } from '../core/services/theme.service';
       filter: blur(60px);
       opacity: 0.25;
       animation: drift 8s ease-in-out infinite alternate;
+      pointer-events: none;
     }
     .blob-1 { width: 340px; height: 340px; background: #3b82f6; top: -80px; right: -60px; animation-delay: 0s; }
     .blob-2 { width: 260px; height: 260px; background: #06b6d4; bottom: 60px; left: -40px; animation-delay: 2s; }
@@ -203,9 +203,11 @@ import { ThemeService } from '../core/services/theme.service';
     .visual-content {
       position: relative;
       z-index: 2;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      justify-content: center;
+      gap: 24px;
     }
 
     /* Logo row */
@@ -225,6 +227,7 @@ import { ThemeService } from '../core/services/theme.service';
       align-items: center;
       justify-content: center;
       color: #fff;
+      flex-shrink: 0;
     }
     .logo-name {
       font-family: 'Space Grotesk', sans-serif;
@@ -234,29 +237,30 @@ import { ThemeService } from '../core/services/theme.service';
       letter-spacing: -0.3px;
     }
 
-    /* Hero image */
+    /* Hero image — constrained so it never overflows */
     .hero-img-wrap {
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(4px);
-      max-height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 100%;
+      max-height: 280px;
     }
     .hero-img {
       width: 100%;
-      height: 100%;
+      height: 280px;
       object-fit: cover;
+      object-position: center;
       display: block;
     }
     .hero-fallback {
+      height: 280px;
+      display: none;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 12px;
-      padding: 48px;
       color: rgba(255,255,255,0.4);
       font-size: 12px;
     }
@@ -264,17 +268,17 @@ import { ThemeService } from '../core/services/theme.service';
     /* Headline */
     .visual-text h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.75rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 8px;
+      margin: 0 0 8px;
       line-height: 1.2;
     }
     .visual-text p {
       font-size: 0.875rem;
       color: rgba(255,255,255,0.6);
       line-height: 1.6;
-      max-width: 340px;
+      margin: 0;
     }
 
     /* Feature pills */
@@ -295,6 +299,7 @@ import { ThemeService } from '../core/services/theme.service';
       border: 1px solid rgba(255,255,255,0.15);
       color: rgba(255,255,255,0.85);
       backdrop-filter: blur(4px);
+      white-space: nowrap;
     }
     .pill i { font-size: 11px; }
 
@@ -303,17 +308,19 @@ import { ThemeService } from '../core/services/theme.service';
       z-index: 2;
       font-size: 11px;
       color: rgba(255,255,255,0.3);
+      padding-top: 20px;
     }
 
     /* ── Right form panel ────────────────────────────────────────────────── */
     .form-panel {
-      flex: 0 0 480px;
+      flex: 0 0 460px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--bg);
       position: relative;
-      padding: 32px 24px;
+      padding: 24px;
+      min-height: 100vh;
     }
     @media (max-width: 900px) { .form-panel { flex: 1; } }
 
@@ -340,7 +347,7 @@ import { ThemeService } from '../core/services/theme.service';
     /* ── Glass card ──────────────────────────────────────────────────────── */
     .glass-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 390px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -369,22 +376,23 @@ import { ThemeService } from '../core/services/theme.service';
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 6px;
+      margin: 0 0 6px;
     }
     .card-header p {
       font-size: 0.875rem;
       color: var(--text-muted);
+      margin: 0;
     }
 
     /* ── Fields ──────────────────────────────────────────────────────────── */
-    .field { margin-bottom: 18px; }
+    .field { margin-bottom: 16px; }
     .field label {
       display: block;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--text-muted);
       margin-bottom: 7px;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
     .input-row {
@@ -405,34 +413,33 @@ import { ThemeService } from '../core/services/theme.service';
     .input-row.input-err:focus-within { box-shadow: 0 0 0 3px rgba(178,58,49,0.12); }
 
     .input-icon {
-      padding: 0 12px;
+      padding: 0 11px;
       color: var(--text-faint);
-      font-size: 14px;
+      font-size: 13px;
       flex-shrink: 0;
     }
     .input-row input {
       flex: 1;
       border: none;
       background: transparent;
-      padding: 11px 12px 11px 0;
+      padding: 11px 8px 11px 0;
       font-size: 13.5px;
       color: var(--text);
       font-family: 'Inter', sans-serif;
       outline: none;
-      width: 100%;
+      min-width: 0;
     }
     .input-row input::placeholder { color: var(--text-faint); }
 
     .eye-btn {
       background: none;
       border: none;
-      padding: 0 12px;
+      padding: 0 11px;
       cursor: pointer;
       color: var(--text-faint);
       display: flex;
       align-items: center;
-      font-size: 14px;
-      height: 100%;
+      font-size: 13px;
     }
     .eye-btn:hover { color: var(--text); }
 
@@ -446,7 +453,7 @@ import { ThemeService } from '../core/services/theme.service';
       font-size: 13px;
       color: var(--text-muted);
       cursor: pointer;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       user-select: none;
     }
     .remember-row input { accent-color: #1e3a5f; width: 15px; height: 15px; cursor: pointer; }
@@ -464,7 +471,6 @@ import { ThemeService } from '../core/services/theme.service';
       font-size: 13px;
       margin-bottom: 16px;
     }
-    .error-banner i { flex-shrink: 0; }
 
     /* Submit button */
     .submit-btn {
@@ -485,10 +491,7 @@ import { ThemeService } from '../core/services/theme.service';
       transition: opacity 0.2s, transform 0.15s;
       letter-spacing: 0.01em;
     }
-    .submit-btn:hover:not(:disabled) {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
     /* Spinner */
@@ -499,12 +502,13 @@ import { ThemeService } from '../core/services/theme.service';
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: #fff;
       animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Card footer */
     .card-footer {
-      margin-top: 24px;
+      margin-top: 22px;
       text-align: center;
       font-size: 11px;
       color: var(--text-faint);
