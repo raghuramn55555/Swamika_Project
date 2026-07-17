@@ -32,7 +32,7 @@ import { ThemeService } from '../core/services/theme.service';
 
         <!-- Hero image (AI-CV graphic) -->
         <div class="hero-img-wrap">
-          <img src="ai-cv-hero.png" alt="AI-powered CV analysis" class="hero-img"
+          <img src="image.png" alt="AI-powered CV analysis" class="hero-img"
                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
           <!-- Fallback when image not yet added -->
           <div class="hero-fallback" style="display:none">
@@ -322,7 +322,31 @@ import { ThemeService } from '../core/services/theme.service';
       padding: 24px;
       min-height: 100vh;
     }
-    @media (max-width: 900px) { .form-panel { flex: 1; } }
+    @media (max-width: 900px) {
+      .form-panel {
+        flex: 1;
+        /* On mobile: subtle gradient so it doesn't look like a dark void */
+        background: linear-gradient(160deg, #0f172a 0%, #1a2744 50%, #0d3d38 100%);
+      }
+      /* On mobile the card needs lighter colors since bg is dark */
+      .glass-card {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.12);
+      }
+      .card-header h2 { color: #fff; }
+      .card-header p  { color: rgba(255,255,255,0.6); }
+      .field label    { color: rgba(255,255,255,0.5); }
+      .input-row {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.15);
+      }
+      .input-row input { color: #fff; }
+      .input-row input::placeholder { color: rgba(255,255,255,0.35); }
+      .input-icon { color: rgba(255,255,255,0.4); }
+      .eye-btn    { color: rgba(255,255,255,0.4); }
+      .remember-row { color: rgba(255,255,255,0.55); }
+      .card-footer  { color: rgba(255,255,255,0.25); }
+    }
 
     /* Theme button */
     .theme-btn {
@@ -339,10 +363,18 @@ import { ThemeService } from '../core/services/theme.service';
       align-items: center;
       justify-content: center;
       transition: background 0.2s, transform 0.15s;
+      z-index: 10;
     }
     .theme-btn:hover { background: var(--surface-2); transform: scale(1.08); }
     .theme-btn .fa-sun  { font-size: 15px; color: #f59e0b; }
     .theme-btn .fa-moon { font-size: 15px; color: #6366f1; }
+    @media (max-width: 900px) {
+      .theme-btn {
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.2);
+      }
+      .theme-btn:hover { background: rgba(255,255,255,0.18); }
+    }
 
     /* ── Glass card ──────────────────────────────────────────────────────── */
     .glass-card {
