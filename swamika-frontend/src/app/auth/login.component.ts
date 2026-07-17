@@ -322,13 +322,17 @@ import { ThemeService } from '../core/services/theme.service';
       padding: 24px;
       min-height: 100vh;
     }
+
+    /* Desktop dark mode: slightly deeper than card surface but not harsh */
+    html[data-theme="dark"] .form-panel {
+      background: #111827;
+    }
+
     @media (max-width: 900px) {
       .form-panel {
         flex: 1;
-        /* On mobile: subtle gradient so it doesn't look like a dark void */
         background: linear-gradient(160deg, #0f172a 0%, #1a2744 50%, #0d3d38 100%);
       }
-      /* On mobile the card needs lighter colors since bg is dark */
       .glass-card {
         background: rgba(255,255,255,0.06);
         border-color: rgba(255,255,255,0.12);
